@@ -11,7 +11,6 @@ using Nitto1320LegendsServer.Models;
 namespace Nitto1320LegendsServer.Controllers
 {
     [Produces("application/json")]
-    //[Route("api/Accounts")]
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

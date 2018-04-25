@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Nitto1320LegendsServer.Controllers
@@ -11,6 +12,7 @@ namespace Nitto1320LegendsServer.Controllers
     {
         // GET api/values
         [HttpGet]
+        [Authorize(Policy = "ApiUser")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
