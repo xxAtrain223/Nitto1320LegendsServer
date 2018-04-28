@@ -14,14 +14,10 @@ namespace Nitto1320LegendsServer.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
 
-        public AccountController(
-            UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         [HttpPost]

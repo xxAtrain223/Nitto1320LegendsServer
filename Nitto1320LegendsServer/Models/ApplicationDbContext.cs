@@ -10,6 +10,5 @@ namespace Nitto1320LegendsServer.Models
             : base(options)
         {
         }
-        public DbSet<Nitto1320LegendsServer.Models.AppUser> AppUser { get; set; }
     }
 }

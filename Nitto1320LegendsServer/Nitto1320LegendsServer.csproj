@@ -7,9 +7,16 @@
   <ItemGroup>
     <Compile Remove="Migrations\20180424231641_initial.cs" />
     <Compile Remove="Migrations\20180424231641_initial.Designer.cs" />
+    <Compile Remove="Migrations\20180427072646_test.cs" />
+    <Compile Remove="Migrations\20180427072646_test.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\Default Settings.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
