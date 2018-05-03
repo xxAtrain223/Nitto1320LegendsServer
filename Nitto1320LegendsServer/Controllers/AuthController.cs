@@ -7,6 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
+using System.IO;
+using System.Xml;
+using Nitto1320LegendsServer.Classes;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Nitto1320LegendsServer.Controllers
 {
@@ -37,8 +45,76 @@ namespace Nitto1320LegendsServer.Controllers
                 return BadRequest("Invalid username or password.");
             }
 
-            var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, username, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            return Ok(jwt);
+            //JwtToken jwt = await Tokens.GenerateJwt(identity, _jwtFactory, username, _jwtOptions, new JsonSerializerSettings { Formatting = Newtonsoft.Json.Formatting.None });
+            //List<Claim> claims = identity.Claims.ToList();
+            //AppUser user = await _userManager.GetUserAsync(new ClaimsPrincipal(identity));
+            AppUser user = await GetUserAsync(username, password);
+            LoginXml loginXml = new LoginXml
+            {
+                bg = "FF0000FF",
+                dc = 1,
+                i = user.Id,
+                im = "",
+                lid = 1,
+                m = 500,
+                p = 9001,
+                sc = 7,
+                ti = 1,
+                tr = 0,
+                u = user.UserName
+            };
+
+            XmlDocument xdoc = new XmlDocument();
+            XmlElement root = (XmlElement)xdoc.AppendChild(xdoc.CreateElement("root"));
+            XmlElement child1 = (XmlElement)root.AppendChild(xdoc.CreateElement("child1"));
+            XmlElement child2 = (XmlElement)child1.AppendChild(xdoc.ImportNode(SerializeToXmlElement(loginXml), false));
+            
+            Response.StatusCode = 200;
+            return Content(XmlToString(xdoc), "application/xml");
+        }
+        
+        public static XmlElement SerializeToXmlElement(object o)
+        {
+            XmlDocument doc = new XmlDocument();
+
+            using (XmlWriter writer = doc.CreateNavigator().AppendChild())
+            {
+                new XmlSerializer(o.GetType()).Serialize(writer, o);
+            }
+
+            doc.DocumentElement.Attributes.RemoveNamedItem("xmlns:xsi");
+            doc.DocumentElement.Attributes.RemoveNamedItem("xmlns:xsd");
+            
+            return doc.DocumentElement;
+        }
+
+        public static string XmlToString(XmlNode xml)
+        {
+            using (var stringWriter = new StringWriter())
+            using (var xmlTextWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { OmitXmlDeclaration = true }))
+            {
+                xml.WriteTo(xmlTextWriter);
+                xmlTextWriter.Flush();
+                return stringWriter.GetStringBuilder().ToString();
+            }
+        }
+
+        private async Task<AppUser> GetUserAsync(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
+
+            AppUser user = await _userManager.FindByNameAsync(username);
+
+            if (user == null)
+                return null;
+
+            if (await _userManager.CheckPasswordAsync(user, password))
+            {
+                return user;
+            }
+
+            return null;
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

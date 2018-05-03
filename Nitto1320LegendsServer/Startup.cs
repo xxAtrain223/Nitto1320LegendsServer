@@ -129,6 +129,7 @@ namespace Nitto1320LegendsServer
             //}
 
             app.UseAuthentication();
+            app.UseStaticFiles();
 
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
