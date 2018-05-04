@@ -51,23 +51,22 @@ namespace Nitto1320LegendsServer.Controllers
             AppUser user = await GetUserAsync(username, password);
             LoginXml loginXml = new LoginXml
             {
-                bg = "FF0000FF",
+                bg = "#CFFFFF",
                 dc = 1,
-                i = user.Id,
-                im = "",
-                lid = 1,
-                m = 500,
-                p = 9001,
-                sc = 7,
+                i = "1",// user.Id,
+                im = "2",
+                lid = 300,
+                m = 666,
+                p = 777,
+                sc = 100001,
                 ti = 1,
-                tr = 0,
+                tr = 1,
                 u = user.UserName
             };
 
             XmlDocument xdoc = new XmlDocument();
-            XmlElement root = (XmlElement)xdoc.AppendChild(xdoc.CreateElement("root"));
-            XmlElement child1 = (XmlElement)root.AppendChild(xdoc.CreateElement("child1"));
-            XmlElement child2 = (XmlElement)child1.AppendChild(xdoc.ImportNode(SerializeToXmlElement(loginXml), false));
+            XmlElement root = (XmlElement)xdoc.AppendChild(xdoc.CreateElement("n2"));
+            XmlElement loginXmlNode = (XmlElement)root.AppendChild(xdoc.ImportNode(SerializeToXmlElement(loginXml), false));
             
             Response.StatusCode = 200;
             return Content(XmlToString(xdoc), "application/xml");
